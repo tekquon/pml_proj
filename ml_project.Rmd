@@ -1,0 +1,82 @@
+---
+title: "Practical Machine Learning Project"
+author: "Andrew Techmeier"
+date: "September 27, 2015"
+output: html_document
+---
+
+# Summary
+This projects the exercise mode using the accelerometers on the belt, forearm, arm, and dumbell. More information on the data source can be found [here]( http://groupware.les.inf.puc-rio.br/har).
+
+# Modeling
+
+To create the model, we load and clean the data, split it into training and cross validation sets, evaluate the accuracy of the model and then generate the solution files.
+Due to speed and perfomrance, the example code below uses only 0.01% of data for training. With so little data, it already gives around 70% accuracy.
+
+Training on 80% of the data leads to 97% accuracy. 
+
+```{r}
+library(caret)
+library(doMC)
+registerDoMC(cores=4)
+trainURL <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+testURL <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+if(!file.exists("./data")) {
+  dir.create("./data")
+}
+if(!file.exists("./data/training.csv"))
+{
+  download.file(trainURL, destfile="./data/training.csv", method="curl")
+}
+if(!file.exists("./data/test.csv")) {
+  download.file(testURL, destfile = "./data/test2.csv", method="curl")
+}
+if(!exists("train_data")) {
+  train_data <- read.csv("./data/training.csv", na.strings = c("NA", "", " "))
+}
+if(!exists("test_data")) {
+  test_data <- read.csv("./data/test2.csv", na.strings = c("NA", "", " "))
+}
+
+train_data <- train_data[,8:length(train_data)]
+test_data <- test_data[,8:length(test_data)]
+
+##Remove all of the columns with NA
+goodColumns <- c()
+for(i in 1:length(train_data)) {
+  if(!anyNA(train_data[,i])){
+    goodColumns <- c(goodColumns, i)
+  }
+}
+train_data <- train_data[,goodColumns]
+test_data <- test_data[, goodColumns]
+
+inTrain <- createDataPartition(y=train_data$classe, p=0.01, list=FALSE)
+
+train_data_model <- train_data[inTrain,]
+train_data_cv <- train_data[-inTrain,]
+
+
+rf_model <- train(classe ~ ., data=train_data_model, method = "gbm", verbose=FALSE)
+
+cv_vals <- predict(rf_model, train_data_cv)
+
+confusionMatrix(train_data_cv$classe, cv_vals)
+
+testVals <- predict(rf_model, test_data)
+
+if(!file.exists("./test_responses")) {
+  dir.create("./test_responses")
+  
+}
+
+pml_write_files = function(x){
+  n = length(x)
+  for(i in 1:n){
+    filename = paste0("./test_responses/problem_id_",i,".txt")
+    write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
+
+pml_write_files(testVals)
+```
