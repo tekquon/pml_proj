@@ -11,9 +11,11 @@ This projects the exercise mode using the accelerometers on the belt, forearm, a
 # Modeling
 
 To create the model, we load and clean the data, split it into training and cross validation sets, evaluate the accuracy of the model and then generate the solution files.
-Due to speed and perfomrance, the example code below uses only 0.01% of data for training. With so little data, it already gives around 70% accuracy.
 
-Training on 80% of the data leads to 97% accuracy. 
+
+Training on 80% of the data leads to 97% accuracy.
+
+NOTE: Due to speed and perfomrance since knitr tries to reload the gbm model, the example code below uses only 0.01% of data for training. With so little data, it already gives around 70% accuracy.
 
 ```{r}
 library(caret)

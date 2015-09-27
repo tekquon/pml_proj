@@ -74,7 +74,9 @@ img {
 </div>
 <div id="modeling" class="section level1">
 <h1>Modeling</h1>
-<p>To create the model, we load and clean the data, split it into training and cross validation sets, evaluate the accuracy of the model and then generate the solution files. Due to speed and perfomrance, the example code below uses only 0.01% of data for training. Training on 80% of the data leads to 97% accuracy.</p>
+<p>To create the model, we load and clean the data, split it into training and cross validation sets, evaluate the accuracy of the model and then generate the solution files.</p>
+<p>Training on 80% of the data leads to 97% accuracy.</p>
+<p>NOTE: Due to speed and perfomrance since knitr tries to reload the gbm model, the example code below uses only 0.01% of data for training. With so little data, it already gives around 70% accuracy.</p>
 <pre class="r"><code>library(caret)</code></pre>
 <pre><code>## Loading required package: lattice
 ## Loading required package: ggplot2</code></pre>
@@ -141,33 +143,33 @@ confusionMatrix(train_data_cv$classe, cv_vals)</code></pre>
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
-##          A 4341   87  370  474  252
-##          B  520 1851  690  400  298
-##          C  481   99 2398  232  177
-##          D  236  149  451 2141  206
-##          E  144  258  319  303 2546
+##          A 4465  351  160  483   65
+##          B  537 2233  603  205  181
+##          C  672  302 2271  116   26
+##          D  306  259  339 2089  190
+##          E  185  431  462   96 2396
 ## 
 ## Overall Statistics
-##                                          
-##                Accuracy : 0.6836         
-##                  95% CI : (0.677, 0.6901)
-##     No Information Rate : 0.2946         
-##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16      
-##                                          
-##                   Kappa : 0.6            
-##  Mcnemar's Test P-Value : &lt; 2.2e-16      
+##                                           
+##                Accuracy : 0.6927          
+##                  95% CI : (0.6861, 0.6992)
+##     No Information Rate : 0.3174          
+##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##                                           
+##                   Kappa : 0.6097          
+##  Mcnemar's Test P-Value : &lt; 2.2e-16       
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.7587   0.7574   0.5672   0.6031   0.7318
-## Specificity            0.9137   0.8876   0.9349   0.9344   0.9358
-## Pos Pred Value         0.7858   0.4924   0.7080   0.6726   0.7132
-## Neg Pred Value         0.9006   0.9621   0.8859   0.9132   0.9411
-## Prevalence             0.2946   0.1258   0.2177   0.1828   0.1791
-## Detection Rate         0.2235   0.0953   0.1235   0.1102   0.1311
+## Sensitivity            0.7242   0.6244   0.5922   0.6989   0.8383
+## Specificity            0.9201   0.9037   0.9284   0.9334   0.9291
+## Pos Pred Value         0.8083   0.5940   0.6705   0.6563   0.6711
+## Neg Pred Value         0.8777   0.9143   0.9025   0.9446   0.9709
+## Prevalence             0.3174   0.1841   0.1974   0.1539   0.1471
+## Detection Rate         0.2299   0.1150   0.1169   0.1076   0.1234
 ## Detection Prevalence   0.2844   0.1935   0.1744   0.1639   0.1838
-## Balanced Accuracy      0.8362   0.8225   0.7510   0.7687   0.8338</code></pre>
+## Balanced Accuracy      0.8222   0.7641   0.7603   0.8162   0.8837</code></pre>
 <pre class="r"><code>testVals &lt;- predict(rf_model, test_data)
 
 if(!file.exists(&quot;./test_responses&quot;)) {
